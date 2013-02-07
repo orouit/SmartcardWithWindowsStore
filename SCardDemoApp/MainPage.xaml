@@ -1,0 +1,40 @@
+﻿<Page
+    x:Class="SCardDemoApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SCardDemoApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Height="817" Width="1384">
+
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="-18,0,0,0">
+        <TextBlock HorizontalAlignment="Left" Height="54" Margin="91,10,0,0" TextWrapping="Wrap" Text="Reader List" VerticalAlignment="Top" Width="209" FontSize="40"/>
+        <ComboBox HorizontalAlignment="Left" Height="54" Margin="328,10,0,0" VerticalAlignment="Top" Width="930" FontSize="40" ItemsSource="{Binding ReaderList}" SelectedValue="{Binding ReaderName, Mode=TwoWay}"/>
+        <Button Content="Connect" HorizontalAlignment="Left" Height="67" Margin="22,111,0,0" VerticalAlignment="Top" Width="209" FontSize="36" Command="{Binding ConnectCommand}"/>
+        <Button Content="Disconnect" HorizontalAlignment="Left" Height="67" Margin="262,111,0,0" VerticalAlignment="Top" Width="258" FontSize="36" Command="{Binding DisconnectCommand}"/>
+        <TextBlock HorizontalAlignment="Left" Margin="540,111,0,0" TextWrapping="Wrap" Text="ATR" VerticalAlignment="Top" Height="48" Width="84" FontSize="36"/>
+        <TextBlock HorizontalAlignment="Left" Height="48" Margin="640,111,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="618" FontSize="36"/>
+        <TextBlock HorizontalAlignment="Left" Margin="35,209,0,0" TextWrapping="Wrap" Text="APDU Command" VerticalAlignment="Top" Height="43" Width="297" FontSize="36"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="35,275,0,0" TextWrapping="Wrap" Text="Class" VerticalAlignment="Top" Width="87" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="50" Margin="138,275,0,0" TextWrapping="Wrap" Text="{Binding Class, Mode=TwoWay}" VerticalAlignment="Top" Width="85" FontSize="30" RenderTransformOrigin="0.513,0.304" MaxLength="2" KeyDown="TextBox_KeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="275,275,0,0" TextWrapping="Wrap" Text="Ins" VerticalAlignment="Top" Width="70" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="50" Margin="378,275,0,0" TextWrapping="Wrap" Text="{Binding Ins, Mode=TwoWay}" VerticalAlignment="Top" Width="85" FontSize="30" RenderTransformOrigin="0.513,0.304" MaxLength="2" KeyDown="TextBox_KeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="35,345,0,0" TextWrapping="Wrap" Text="P1" VerticalAlignment="Top" Width="87" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="50" Margin="138,345,0,0" TextWrapping="Wrap" Text="{Binding P1, Mode=TwoWay}" VerticalAlignment="Top" Width="85" FontSize="30" RenderTransformOrigin="0.513,0.304" MaxLength="2" KeyDown="TextBox_KeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="275,345,0,0" TextWrapping="Wrap" Text="P2" VerticalAlignment="Top" Width="70" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="50" Margin="378,345,0,0" TextWrapping="Wrap" Text="{Binding P2, Mode=TwoWay}" VerticalAlignment="Top" Width="85" FontSize="30" RenderTransformOrigin="0.513,0.304" MaxLength="2" KeyDown="TextBox_KeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="523,275,0,0" TextWrapping="Wrap" Text="Le" VerticalAlignment="Top" Width="85" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="50" Margin="626,275,0,0" TextWrapping="Wrap" Text="{Binding Le, Mode=TwoWay}" VerticalAlignment="Top" Width="85" FontSize="30" RenderTransformOrigin="0.513,0.304" InputScope="Number" MaxLength="3"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="35,417,0,0" TextWrapping="Wrap" Text="Data" VerticalAlignment="Top" Width="103" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="272" Margin="37,460,0,0" TextWrapping="Wrap" Text="{Binding Data, Mode=TwoWay}" VerticalAlignment="Top" Width="483" FontSize="30" KeyDown="TextBox_KeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="540,417,0,0" TextWrapping="Wrap" Text="Received Data" VerticalAlignment="Top" Width="237" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="272" Margin="540,460,0,0" TextWrapping="Wrap" Text="{Binding ResponseData, Mode=TwoWay}" IsReadOnly="True" VerticalAlignment="Top" Width="483" FontSize="30"/>
+        <Button Content="Transmit" HorizontalAlignment="Left" Height="67" Margin="814,258,0,0" VerticalAlignment="Top" Width="209" FontSize="36" Command="{Binding TransmitCommand}" />
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="526,345,0,0" TextWrapping="Wrap" Text="SW1" VerticalAlignment="Top" Width="82" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="50" Margin="629,345,0,0" TextWrapping="Wrap" Text="{Binding SW1, Mode=TwoWay}" IsReadOnly="True" VerticalAlignment="Top" Width="85" FontSize="30" RenderTransformOrigin="0.513,0.304"/>
+        <TextBlock HorizontalAlignment="Left" Height="43" Margin="766,345,0,0" TextWrapping="Wrap" Text="SW2" VerticalAlignment="Top" Width="82" FontSize="36"/>
+        <TextBox HorizontalAlignment="Left" Height="50" Margin="869,345,0,0" TextWrapping="Wrap" Text="{Binding SW2, Mode=TwoWay}" IsReadOnly="True" VerticalAlignment="Top" Width="85" FontSize="30" RenderTransformOrigin="0.513,0.304"/>
+        <TextBlock HorizontalAlignment="Left" Margin="37,759,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="986" Height="32" FontSize="24" Text="{Binding Status}"/>
+
+    </Grid>
+</Page>
