@@ -28,8 +28,10 @@ namespace Core.Util
 
         public static bool IsValidHexDigitKey(VirtualKey key)
         {
-            return (key >= VirtualKey.Number0 && key <= VirtualKey.Number9) ||
+            bool ret =  (key >= VirtualKey.Number0 && key <= VirtualKey.Number9) ||
                 (key >= VirtualKey.A && key <= VirtualKey.F);
+
+            return ret;
         }
     }
 }

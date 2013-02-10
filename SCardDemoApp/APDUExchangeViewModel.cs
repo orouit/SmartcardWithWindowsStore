@@ -20,6 +20,10 @@ namespace SCardDemoApp
 {
     class APDUExchangeViewModel : BaseViewModel<APDUExchangeViewModel>
     {
+        delegate void SetPropertyDel(string inData);
+        delegate bool ConditionDel(string data);
+
+
         class ApduCmdProp
         {
             public const string
@@ -46,6 +50,12 @@ namespace SCardDemoApp
 
         #region Fields
 
+        private string sClass = string.Empty;
+        private string sIns = string.Empty;
+        private string sP1 = string.Empty;
+        private string sP2 = string.Empty;
+        private string sData = string.Empty;
+
         private Smartcard card = null;
         private APDUCommand apduCommand = null;
         private APDUResponse apduResponse = null;
@@ -63,11 +73,11 @@ namespace SCardDemoApp
             apduCommand.Ins = 0xA4;
             apduCommand.Data = new byte[] { 0x3F, 0x00 };
 
-            ClassLength = 2;
-            InsLength = 2;
-            DataLength = 4;
-            P1Length = 2;
-            P2Length = 2;
+            sClass = "A0";
+            sIns = "A4";
+            sP1 = "00";
+            sP2 = "00";
+            sData = "3F00";
 
             CreateConnectCommand();
             CreateDisconnectCommand();
@@ -121,83 +131,64 @@ namespace SCardDemoApp
         {
             get 
             { 
-                return Core.Util.Convert.HexToString(apduCommand.Class); 
+                return sClass;
             }
 
             set
             {
-                ClassLength = value.Length;
-                apduCommand.Class = Core.Util.Convert.ParseByteToHex(value);
-                RaisePropertyChanged(ApduCmdProp.Class);
-                TransmitCommand.RaiseCanExecuteChanged();
+                PropertySet(ref sClass, delegate(string inDt)
+                {
+                    apduCommand.Class = Core.Util.Convert.ParseByteToHex(value);
+                }, ApduCmdProp.Class, value, ByteCondition);
             }
-        }
-
-        public int ClassLength
-        {
-            get;
-            private set;
         }
 
         public string Ins
         {
             get 
             { 
-                return Core.Util.Convert.HexToString(apduCommand.Ins);
+                return sIns;
             }
 
             set
             {
-                InsLength = value.Length;
-                apduCommand.Ins = Core.Util.Convert.ParseByteToHex(value);
-                RaisePropertyChanged(ApduCmdProp.Ins);
-                TransmitCommand.RaiseCanExecuteChanged();
+                PropertySet(ref sIns, delegate(string inDt)
+                {
+                    apduCommand.Ins = Core.Util.Convert.ParseByteToHex(value);
+                }, ApduCmdProp.Ins, value, ByteCondition);
             }
-        }
-
-        public int InsLength
-        {
-            get;
-            private set;
         }
 
         public string P1
         {
             get 
             {
-                return Core.Util.Convert.HexToString(apduCommand.P1);
+                return sP1;
             }
 
             set
             {
-                P1Length = value.Length;
-                apduCommand.P1 = Core.Util.Convert.ParseByteToHex(value);
-                RaisePropertyChanged(ApduCmdProp.P1);
-                TransmitCommand.RaiseCanExecuteChanged();
+                PropertySet(ref sP1, delegate(string inDt)
+                {
+                    apduCommand.P1 = Core.Util.Convert.ParseByteToHex(value);
+                }, ApduCmdProp.P1, value, ByteCondition);
             }
-        }
-
-        public int P1Length
-        {
-            get;
-            private set;
         }
 
         public string P2
         {
-            get { return Core.Util.Convert.HexToString(apduCommand.P2); }
+            get 
+            { 
+                return sP2;
+            }
+
             set
             {
-                apduCommand.P2 = Core.Util.Convert.ParseByteToHex(value);
-                RaisePropertyChanged(ApduCmdProp.P2);
-                TransmitCommand.RaiseCanExecuteChanged();
+                PropertySet(ref sP2, delegate(string inDt)
+                {
+                    apduCommand.P2 = Core.Util.Convert.ParseByteToHex(value);
+                }, ApduCmdProp.P2, value, ByteCondition);
             }
-        }
-
-        public int P2Length
-        {
-            get;
-            private set;
         }
 
         public string Le
@@ -205,7 +196,6 @@ namespace SCardDemoApp
             get { return apduCommand.Le.ToString(); }
             set
             {
-                P2Length = value.Length;
                 apduCommand.Le = byte.Parse(value);
                 RaisePropertyChanged(ApduCmdProp.Le);
                 TransmitCommand.RaiseCanExecuteChanged();
@@ -214,20 +204,18 @@ namespace SCardDemoApp
 
         public string Data
         {
-            get { return Core.Util.Convert.BufferToString(apduCommand.Data); }
+            get 
+            { 
+                return sData;
+            }
+
             set
             {
-                DataLength = value.Length;
-                apduCommand.Data = Core.Util.Convert.ParseBufferToHex(value);
-                RaisePropertyChanged(ApduCmdProp.Data);
-                TransmitCommand.RaiseCanExecuteChanged();
+                PropertySet(ref sData, delegate(string inDt)
+                {
+                    apduCommand.Data = Core.Util.Convert.ParseBufferToHex(value);
+                }, ApduCmdProp.Data, value, ByteCondition);
             }
-        }
-
-        public int DataLength
-        {
-            get;
-            private set;
         }
         
         #endregion
@@ -344,9 +332,11 @@ namespace SCardDemoApp
         private bool CanExecuteTransmitCommand()
         {
             return Connected && 
-                ClassLength == 2 && InsLength == 2 &&
-                P1Length == 2 && P2Length == 2 &&
-                (DataLength % 2) == 0;
+                (Class.Length == 2 && HexHelper.AreValidHexDigits(Class)) && 
+                (Ins.Length == 2 && HexHelper.AreValidHexDigits(Ins)) &&
+                (P1.Length == 2 && HexHelper.AreValidHexDigits(P1)) && 
+                (P2.Length == 2 && HexHelper.AreValidHexDigits(P2)) &&
+                (Data.Length == 0 || ((Data.Length % 2) == 0 && HexHelper.AreValidHexDigits(Data)));
         }
 
         private void CreateTransmitCommand()
@@ -373,5 +363,29 @@ namespace SCardDemoApp
         }
 
         #endregion
+
+        private bool ByteCondition(string inData)
+        {
+            return inData.Length == 2;
+        }
+
+        private bool BufferCondition(string inData)
+        {
+            return inData.Length % 2 == 0;
+        }
+
+        private void PropertySet(ref string field, SetPropertyDel setProperty, string propName, string inData, ConditionDel condition)
+        {
+            field = inData;
+            if (condition(inData))
+            {
+                if (HexHelper.AreValidHexDigits(inData))
+                {
+                    setProperty(inData);
+                    RaisePropertyChanged(propName);
+                }
+            }
+            TransmitCommand.RaiseCanExecuteChanged();
+        }
     }
 }
